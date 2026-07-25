@@ -12,7 +12,7 @@
 </head>
 <body>
 <main class="app">
-<header><h1>OPD Card Allocation Calculator</h1><p>Enter today’s cards and available staff. Allocation updates automatically.</p></header>
+<header><h1>OPD Card Allocation Calculator</h1><p>Enter today's cards and available staff. The allocation is calculated automatically using the allocation rules below, which can be modified if required.</p></header>
 <section class="card inputs-card"><h2>INPUTS</h2><div class="input-columns">
 <div class="input-group workload"><h3>TODAY’S WORKLOAD AND STAFF</h3><div class="subhead">CARDS</div>
 <div class="field"><label for="newCards">New cards</label><input id="newCards" type="number" min="0" step="1" placeholder="Enter"></div>
@@ -32,7 +32,7 @@
 <div class="field"><label for="gapSR">Regular-load SRs should receive at least ____ more cards than regular-load JRs</label><input id="gapSR" type="number" min="0" step="1" value="5"></div>
 <div class="field"><label for="gapConsultant">Regular-load consultants should receive at least ____ more cards than regular-load SRs</label><input id="gapConsultant" type="number" min="0" step="1" value="5"></div>
 </div></div></section>
-<section class="card output-card"><h2>ALLOCATION</h2><div id="personSummary" class="person-summary"></div><div id="status" class="status" style="display:none"></div><div class="actions"><button class="primary" id="share">Share summary</button><button class="secondary" id="copy">Copy summary</button><button class="secondary" id="reset">Reset</button></div></section>
+<section class="card output-card"><h2>ALLOCATION PER HEAD</h2><div id="personSummary" class="person-summary"></div><div id="status" class="status" style="display:none"></div><div class="actions"><button class="primary" id="share">Share summary</button><button class="secondary" id="copy">Copy summary</button><button class="secondary" id="reset">Reset</button></div></section>
 </main><div id="toast"></div>
 <script>
 (()=>{
