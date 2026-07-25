@@ -185,7 +185,7 @@ function render(){
   current=calc(x);
   const totalStaff=current.rows.reduce((s,r)=>s+r.people,0);
   personSummary.innerHTML=
-`<div class="person-header"><span>Group</span><span>Staff</span><span>Cards/person</span><span>Total</span></div>`+
+`<div class="person-header"><span>Group</span><span>Staff</span><span>Cards per person</span><span>Total</span></div>`+
 current.rows.map(r=>{
 const cls=r.name.includes('JR')?'jr':(r.name.includes('SR')?'sr':'consultant');
 return `<div class="person-row ${cls}"><span>${r.name}</span><span>${r.people}</span><span>${r.people?rangeText(r):'–'}</span><span>${r.total}</span></div>`;
