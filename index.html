@@ -24,7 +24,8 @@
 <section class="card inputs-card"><h2>INPUTS</h2><div class="input-columns">
 <div class="input-group workload"><h3>TODAY’S WORKLOAD AND STAFF</h3><div class="subhead">CARDS</div>
 <div class="field"><label for="newCards">New cards</label><input id="newCards" type="number" min="0" step="1" placeholder="Enter"></div>
-<div class="field"><label for="oldCards">Old cards<small>Including LCC files</small></label><input id="oldCards" type="number" min="0" step="1" placeholder="Enter"></div>
+<div class="field"><label for="oldCards">Old cards</label><input id="oldCards" type="number" min="0" step="1" placeholder="Enter"></div>
+<div class="field"><label for="lccCards">LCC files</label><input id="lccCards" type="number" min="0" step="1" placeholder="Enter"></div>
 <div class="subhead">AVAILABLE STAFF</div>
 <div class="field"><label for="totalJR">Total JRs</label><input id="totalJR" type="number" min="0" step="1" placeholder="Enter"></div>
 <div class="field"><label for="totalSR">Total SRs</label><input id="totalSR" type="number" min="0" step="1" placeholder="Enter"></div>
@@ -33,7 +34,7 @@
 <div class="input-group settings"><h3>REDUCED-LOAD STAFF AND ALLOCATION RULES</h3><div class="subhead">REDUCED-LOAD STAFF</div>
 <div class="field"><label for="reducedJR">Reduced-load JRs</label><input id="reducedJR" type="number" min="0" step="1" value="0"></div>
 <div class="field"><label for="reducedSR">Reduced-load SRs<small>Include ward SRs</small></label><input id="reducedSR" type="number" min="0" step="1" value="1"></div>
-<div class="field"><label for="reducedConsultants">Reduced-load consultants</label><input id="reducedConsultants" type="number" min="0" step="1" value="0"></div>
+<div class="field"><label for="reducedConsultants">Reduced-load consultants<small>Include LCC consultant</small></label><input id="reducedConsultants" type="number" min="0" step="1" value="0"></div>
 <div class="subhead">ALLOCATION RULES</div>
 <div class="field"><label for="reduction">Reduction per reduced-load person</label><input id="reduction" type="number" min="0" step="1" value="10"></div>
 <div class="field"><label for="maxJR">Maximum cards per JR</label><input id="maxJR" type="number" min="0" step="1" value="25"></div>
@@ -44,7 +45,7 @@
 </main><div id="toast"></div>
 <script>
 (()=>{
-const leftIds=['newCards','oldCards','totalJR','totalSR','totalConsultants'];
+const leftIds=['newCards','oldCards','lccCards','totalJR','totalSR','totalConsultants'];
 const allIds=[...leftIds,'reducedJR','reducedSR','reducedConsultants','reduction','maxJR','gapSR','gapConsultant'];
 const $=id=>document.getElementById(id);
 const int=n=>Number.isInteger(n)&&n>=0&&Number.isFinite(n);
@@ -128,7 +129,7 @@ function allocateExtras(groups,total){
 }
 
 function calc(x){
-  const total=x.newCards+x.oldCards;
+  const total=x.newCards+x.oldCards+x.lccCards;
   const regJR=Math.max(0,x.totalJR-x.reducedJR);
   const regSR=Math.max(0,x.totalSR-x.reducedSR);
   const regC=Math.max(0,x.totalConsultants-x.reducedConsultants);
@@ -161,7 +162,7 @@ function validate(x){
   if(x.reducedSR>x.totalSR)return['error','Reduced-load SRs cannot exceed total SRs.'];
   if(x.reducedConsultants>x.totalConsultants)return['error','Reduced-load consultants cannot exceed total consultants.'];
   if(x.totalJR+x.totalSR+x.totalConsultants===0)return['error','Enter at least one physician.'];
-  if(minimumRequired(x,0)>x.newCards+x.oldCards)return['warning','Too few cards to preserve both minimum gaps, even with zero cards for regular-load JRs.'];
+  if(minimumRequired(x,0)>x.newCards+x.oldCards+x.lccCards)return['warning','Too few cards to preserve both minimum gaps, even with zero cards for regular-load JRs.'];
   return['ok','Allocation complete'];
 }
 
@@ -185,7 +186,7 @@ function render(){
   current=calc(x);
   const totalStaff=current.rows.reduce((s,r)=>s+r.people,0);
   personSummary.innerHTML=
-`<div class="person-header"><span>Group</span><span>Staff</span><span>Cards per person</span><span>Total</span></div>`+
+`<div class="person-header"><span>Group</span><span>Staff</span><span>Cards/person</span><span>Total</span></div>`+
 current.rows.map(r=>{
 const cls=r.name.includes('JR')?'jr':(r.name.includes('SR')?'sr':'consultant');
 return `<div class="person-row ${cls}"><span>${r.name}</span><span>${r.people}</span><span>${r.people?rangeText(r):'–'}</span><span>${r.total}</span></div>`;
@@ -200,7 +201,7 @@ function summary(){
   return[
 'OPD Card Allocation',
 '',
-`${x.newCards} new | ${x.oldCards} old`,
+`${x.newCards} new | ${x.oldCards} old | ${x.lccCards} LCC`,
 '',
 ...current.rows.map(r=>`${r.name} — ${r.people} staff — ${rangeText(r)}/person — ${r.total} cards`),
 '',
